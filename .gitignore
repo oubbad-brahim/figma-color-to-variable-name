@@ -1,0 +1,11 @@
+# Node
+*.log
+*.log.*
+node_modules
+dist/
+.DS_Store
+/.idea/vcs.xml
+/.idea/misc.xml
+/.idea/figma-name that-color.iml
+/.idea/.gitignore
+/.idea/modules.xml
