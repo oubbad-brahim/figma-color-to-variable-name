@@ -4,8 +4,8 @@ import {ShadowEffect} from "./type/ShadowEffect";
 
 figma.showUI(__html__, {themeColors: true, width: 400, height: 200});
 figma.loadAllPagesAsync();
-figma.on("selectionchange", generateBoxShadow);
-figma.on("documentchange", generateBoxShadow);
+figma.on("selectionchange", getAllAvailableColors);
+figma.on("documentchange", getAllAvailableColors);
 
 figma.ui.onmessage = (msg: { type: string; message: string }) => {
     if (msg.type === "toast-message") {
@@ -14,31 +14,31 @@ figma.ui.onmessage = (msg: { type: string; message: string }) => {
 };
 
 if (figma.currentPage.selection.length != 0) {
-    generateBoxShadow();
+    getAllAvailableColors();
 }
 
-function generateBoxShadow() {
+function getAllAvailableColors() {
+    const colorCategories: ColorCategory[] = []
     if (figma.currentPage.selection.length == 1) {
         const node = figma.currentPage.selection[0];
-        const colorCategories :ColorCategory[]= []
 
         colorCategories.push({
-            type:ColorsType.Fills,
-            rgbaList:getFillColors(node)
+            type: ColorsType.Fills,
+            rgbaList: getFillColors(node)
         })
 
         colorCategories.push({
-            type:ColorsType.Strokes,
-            rgbaList:getStrokeColors(node)
+            type: ColorsType.Strokes,
+            rgbaList: getStrokeColors(node)
         })
 
         colorCategories.push({
-            type:ColorsType.Effects,
-            rgbaList:getEffectColors(node)
+            type: ColorsType.Effects,
+            rgbaList: getEffectColors(node)
         })
 
-        figma.ui.postMessage(colorCategories);
     }
+    figma.ui.postMessage(colorCategories);
 }
 
 function getFillColors(node: SceneNode): RGBA[] {
@@ -88,5 +88,5 @@ function getColors(paints: readonly Paint[]): RGBA[] {
                 console.log(`Unsupported paints type: ${paints.type}`);
         }
     });
-    return rgba;
+    return rgba.reverse();
 }

@@ -8,8 +8,5 @@ import hljs from "highlight.js/lib/core";
 import css from "highlight.js/lib/languages/css";
 import hljsVuePlugin from "@highlightjs/vue-plugin";
 
-hljs.registerLanguage("css", css);
-
 const app = createApp(ui);
-app.use(hljsVuePlugin);
 app.mount("#ui");

@@ -1,5 +1,5 @@
 export enum ColorsType {
-    Fills,
-    Strokes,
-    Effects
+    Fills= "Fills",
+    Strokes = "Strokes",
+    Effects = "Effects"
 }

@@ -20,19 +20,3 @@
   padding: 0;
   margin: 0 auto;
 }
-
-.hljs {
-  display: block;
-  width: 100%;
-  height: 100%;
-  font-size: 1.4rem;
-  white-space: wrap;
-  border: 0.1rem solid gray;
-  background: transparent !important;
-  padding-bottom: 4rem !important;
-  scrollbar-width: none;
-}
-
-.hljs::-webkit-scrollbar {
-  display: none;
-}

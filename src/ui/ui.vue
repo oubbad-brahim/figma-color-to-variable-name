@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import GenerateCss from './components/GenerateCss.vue';
+import NameThatColor from './components/NameThatColor.vue';
 </script>
 
 <template>
-  <GenerateCss />
+  <NameThatColor />
 </template>
