@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-
 /* Use a more-intuitive box-sizing model */
 *,
 *::before,
@@ -17,7 +15,6 @@
 /* Make calculations for rem units easier */
 
 html {
-  font-family: "Roboto" , Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-size: 62.5%;
   font-weight: 1.5;
 }

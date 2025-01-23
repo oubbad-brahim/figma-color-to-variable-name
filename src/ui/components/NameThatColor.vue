@@ -4,7 +4,7 @@ import KoFiIcon from '../icons/KoFiIcon.vue'
 import {ref} from "vue";
 import {ColorCategory} from "../../code/type/ColorCategory.ts";
 import {NTC} from "../ntc/ntc.ts";
-import {rgbaToCssString} from "../utils";
+import {rgbaToComposeHex, rgbaToCssString, rgbaToHexString, showToast, writeTextToClipboard} from "../utils";
 import CopyCssIcon from "../icons/CopyCSSIcon.vue";
 import CopyComposeIcon from "../icons/CopyComposeIcon.vue";
 import CopyXMLIcon from "../icons/CopyXMLIcon.vue";
@@ -16,33 +16,65 @@ window.onmessage = (event: MessageEvent) => {
   colorCategories.value = event.data.pluginMessage as ColorCategory[]
 };
 
-const nameThatColor = (rgba: RGBA) => {
+function nameThatColor(rgba: RGBA) {
   const colorMatch = ntc.name(rgbaToCssString({...rgba, a: 1}))
   const name = colorMatch.name
   const opacity = (rgba.a * 100).toFixed(0)
-  const approx = !colorMatch.exactMatch ? "approx" : ''
+  const approx = !colorMatch.exactMatch ? "Approx" : ''
 
   return `${name} ${approx} ${opacity} `.trim()
 }
 
-const copyCSS = () => {
-  // writeTextToClipboard(code.value);
-  // showToast('Copied')
-  console.log("copyCSS")
+const copyCSS = (rgba: RGBA) => {
+  const codeCSS = convertToCSSVariable(nameThatColor(rgba), rgbaToCssString(rgba))
+  writeTextToClipboard(codeCSS);
+  showToast('Copied CSS Color Style')
+  console.log(codeCSS)
 };
 
-const copyCompose = () => {
-  // writeTextToClipboard(code.value);
-  // showToast('Copied')
-  console.log("copyCompose")
-};
+function convertToCSSVariable(colorName: string, colorCSS: string): string {
+  const lowerCased = colorName.toLowerCase();
+  const hyphenated = lowerCased.replace(/\s+/g, '-');
 
-const copyXML = () => {
-  // writeTextToClipboard(code.value);
-  // showToast('Copied')
-  console.log("copyXML")
-};
+  return `--${hyphenated}: ${colorCSS};`;
+}
 
+function copyCompose(rgba: RGBA) {
+  const colorHex = rgbaToComposeHex(rgba);
+  const colorName = nameThatColor(rgba);
+  const composeCode = convertToComposeVariable(colorName, colorHex);
+  writeTextToClipboard(composeCode);
+  showToast('Copied Compose Color');
+  console.log(composeCode);
+}
+
+function convertToComposeVariable(name: string, color: string): string {
+  const pascalCased = name
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join('');
+
+  return `val ${pascalCased} = Color(${color})`;
+}
+
+function copyXML(rgba: RGBA) {
+  const colorHex = rgbaToHexString(rgba);
+  const colorName = nameThatColor(rgba); // Assuming this function returns a color name
+  const xmlColorResource = convertToXMLVariable(colorName, colorHex);
+  writeTextToClipboard(xmlColorResource);
+  showToast('Copied XML Color');
+  console.log(xmlColorResource);
+}
+
+function convertToXMLVariable(name: string, color: string): string {
+  const snakeCasedName = name
+      .toLowerCase()
+      .replace(/\s+/g, '_')
+      .replace(/[^\w_]/g, '')
+
+  return `<color name="${snakeCasedName}">${color}</color>`;
+}
 </script>
 
 <template>
@@ -56,15 +88,18 @@ const copyXML = () => {
                 class="preview"
                 :style="{backgroundColor: rgbaToCssString(rgba)}"
             ></div>
-            <span class="name">{{ nameThatColor(rgba) }}</span>
+            <div class="tooltip">
+              <span class="name">{{ nameThatColor(rgba) }}</span>
+              <span class="text">{{ nameThatColor(rgba) }}</span>
+            </div>
             <div class="btn-group">
-              <button class="btn copy" @click="copyCSS()">
+              <button class="btn copy" @click="copyCSS(rgba)">
                 <CopyCssIcon/>
               </button>
-              <button class="btn copy" @click="copyCompose()">
+              <button class="btn copy" @click="copyCompose(rgba)">
                 <CopyComposeIcon/>
               </button>
-              <button class="btn copy" @click="copyXML()">
+              <button class="btn copy" @click="copyXML(rgba)">
                 <CopyXMLIcon/>
               </button>
             </div>
@@ -100,7 +135,7 @@ h2 {
 }
 
 .name-that-color {
-  padding: 0.8rem;
+  padding: 1.2rem 0.8rem;
   border-radius: 0.8rem;
   border: 0.1rem solid white;
   margin-top: 1.2rem;
@@ -109,12 +144,47 @@ h2 {
   gap: 0.8rem;
 }
 
+.tooltip {
+  position: relative;
+  flex-grow: 1;
+}
+
+.tooltip .text {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  white-space: nowrap;
+  background-color: rgba(255, 255, 255, 0.3);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.4rem 0.4rem 0.4rem 0;
+  font-size: 1rem;
+  transition: all 300ms ease-in-out;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.tooltip .text::after {
+  content: " ";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.3) transparent transparent transparent;
+}
+
+.tooltip:hover .text {
+  visibility: visible;
+  opacity: 1;
+}
+
 .name {
   font-size: 1.6rem;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 
 .info {

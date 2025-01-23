@@ -2,13 +2,14 @@
   --dark: #0d1117;
   --light: white;
   --ebony-clay: #222831;
+}
 
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+html {
+  font-family: "Roboto", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-weight: 400;
   color-scheme: light dark;
   color: var(--light);
   background-color: var(--dark);
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
