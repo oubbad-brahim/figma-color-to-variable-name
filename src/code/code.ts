@@ -22,20 +22,29 @@ function getAllAvailableColors() {
     if (figma.currentPage.selection.length == 1) {
         const node = figma.currentPage.selection[0];
 
-        colorCategories.push({
-            type: ColorsType.Fills,
-            rgbaList: getFillColors(node)
-        })
+        const fillColors = getFillColors(node);
+        if (fillColors.length > 0) {
+            colorCategories.push({
+                type: ColorsType.Fills,
+                rgbaList: fillColors
+            });
+        }
 
-        colorCategories.push({
-            type: ColorsType.Strokes,
-            rgbaList: getStrokeColors(node)
-        })
+        const strokeColors = getStrokeColors(node);
+        if (strokeColors.length > 0) {
+            colorCategories.push({
+                type: ColorsType.Strokes,
+                rgbaList: strokeColors
+            });
+        }
 
-        colorCategories.push({
-            type: ColorsType.Effects,
-            rgbaList: getEffectColors(node)
-        })
+        const effectColors = getEffectColors(node);
+        if (effectColors.length > 0) {
+            colorCategories.push({
+                type: ColorsType.Effects,
+                rgbaList: effectColors
+            });
+        }
 
     }
     figma.ui.postMessage(colorCategories);

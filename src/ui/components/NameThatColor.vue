@@ -79,7 +79,7 @@ function convertToXMLVariable(name: string, color: string): string {
 
 <template>
   <div class="container">
-    <ul class="type">
+    <ul class="type" v-if="colorCategories.length > 0">
       <li v-for="{type , rgbaList } in colorCategories">
         <h2>{{ type }}</h2>
         <ul class="name-that-color">
@@ -89,8 +89,8 @@ function convertToXMLVariable(name: string, color: string): string {
                 :style="{backgroundColor: rgbaToCssString(rgba)}"
             ></div>
             <div class="tooltip">
-              <span class="name">{{ nameThatColor(rgba) }}</span>
-              <span class="text">{{ nameThatColor(rgba) }}</span>
+              <span class="name">{{ nameThatColor({...rgba}) }}</span>
+              <span class="text">{{ nameThatColor({...rgba}) }}</span>
             </div>
             <div class="btn-group">
               <button class="btn copy" @click="copyCSS(rgba)">
@@ -107,7 +107,7 @@ function convertToXMLVariable(name: string, color: string): string {
         </ul>
       </li>
     </ul>
-
+    <span v-else class="empty">✨ Please select 1 layer to start.</span>
     <a class="btn kofi" href="https://ko-fi.com/oubbadbrahim" target="_blank">
       <KoFiIcon/>
       <span>Buy me a coffee</span>
@@ -116,6 +116,21 @@ function convertToXMLVariable(name: string, color: string): string {
 </template>
 
 <style scoped>
+.container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.empty {
+  position: absolute;
+  font-size: 1.6rem;
+  font-weight: bold;
+  white-space: nowrap;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
 h2 {
   font-size: 1.8rem;
